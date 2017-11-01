@@ -1,0 +1,13 @@
+name: 'Hide submit button'
+description: 'Hides the submit button after a form is submitted to avoid duplicate posting'
+core: 8.x
+tags:
+  - content
+version: 8.x-0.1
+libraries: 
+  - hide_submit/global-styling1
+  - hide_submit/global-styling2
+  - hide_submit/global-styling3
+project: hide_submit
+datestamp: '1461254340'
+type: module

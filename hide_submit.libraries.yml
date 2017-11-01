@@ -1,0 +1,29 @@
+global-styling1: 
+  version: 1.x
+  js:
+    js/hide_submit.js: {}
+  css:
+    theme:
+    css/ hide_submit.css: {}
+  dependencies:  
+    - core/jquery
+    - core/drupalSettings
+
+global-styling2: 
+  version: 1.x
+  js:
+    js/ladda.min.js: {}
+  css:
+    theme:
+    css/ladda-themeless.min.css: {}
+  dependencies: 
+    - core/jquery
+    - core/drupalSettings 
+
+global-styling3: 
+  version: 1.x
+  js:
+    js/spin.min.js: {}
+  dependencies:  
+    - core/jquery
+    - core/drupalSettings

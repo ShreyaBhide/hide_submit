@@ -1,0 +1,161 @@
+<?php
+/**
+ * Adds the settings.
+ *
+ * @return
+ *   TRUE if hide_submit is active.
+ */
+function hide_submit_add_settings(&$form) {
+  // kint("just checking");
+ 
+
+  $hide_submit_settings = drupal_static(__FUNCTION__, array());
+ 
+  //kint(\Drupal::config('hide_submit.settings'));
+  //kint(\Drupal::config('hide_submit.settings')->get('hide_submit_status', TRUE));
+  if (empty($hide_submit_settings)) {
+     //kint("just checking-1");
+    $hide_submit_settings = array('hide_submit' => array(
+      'hide_submit_status' => \Drupal::config('hide_submit.settings')->get('hide_submit_status', TRUE),
+      'hide_submit_method' => \Drupal::config('hide_submit.settings')->get('hide_submit_method', 'disable'),
+      'hide_submit_css' => \Drupal::config('hide_submit.settings')->get('hide_submit_css','hide-submit-disable'),
+      'hide_submit_abtext' => t(\Drupal::config('hide_submit.settings')->get('hide_submit_abtext', '')),
+      'hide_submit_atext' => t(\Drupal::config('hide_submit.settings')->get('hide_submit_atext', '')),
+      'hide_submit_hide_css' => \Drupal::config('hide_submit.settings')->get('hide_submit_hide_css', 'hide-submit-processing'),
+      'hide_submit_hide_text' => t(\Drupal::config('hide_submit.settings')->get('hide_submit_hide_text','Processing...')),
+      'hide_submit_indicator_style' => t(\Drupal::config('hide_submit.settings')->get('hide_submit_indicator_style', 'expand-left')),
+      'hide_submit_spinner_color' => t(\Drupal::config('hide_submit.settings')->get('hide_submit_spinner_color', '#000')),
+      'hide_submit_spinner_lines' => (int)\Drupal::config('hide_submit.settings')->get('hide_submit_spinner_lines', 12),
+      'hide_submit_hide_fx' => \Drupal::config('hide_submit.settings')->get('hide_submit_hide_fx', FALSE),
+      'hide_submit_reset_time' => (int)\Drupal::config('hide_submit.settings')->get('hide_submit_reset_time', 5000),
+    ));
+//kint("HEY");
+  
+    // // Allow other modules to modify settings.
+    // \Drupal::moduleHandler()->alter('hide_submit', $hide_submit_settings);
+
+    // // Add settings.
+    // if ($hide_submit_settings['hide_submit']['hide_submit_status']) {
+     
+    // drupal_add_js($hide_submit_settings, 'setting');
+
+    // }
+   // return TRUE;
+    $form['#attached']['drupalSettings'] = $hide_submit_settings;
+  }
+  
+  // Return false if on views_ui page to prevent issues.
+  $path = \Drupal\Core\Url::fromRoute("<current>")->toString();
+  //kint($path);
+  $path_alias = \Drupal::service('path.alias_manager')->getAliasByPath($path);
+  /*$path_alias = \Drupal::service('path.alias_manager')
+    ->getPathAlias($path);*/
+  //kint($path_alias);
+  //kint("path alias");
+  if (strcmp($path_alias, $path) == 0) {
+    $path_alias = '';  // No alias was found.
+  }
+
+
+
+  // // $path_alias = drupal_lookup_path('alias', $path);
+  // kint($path_alias);
+  $urls = array(
+    'admin/structure/views',
+    'admin/structure/views/*',
+  );
+  $patterns = implode("\n", $urls);
+  //kint($hide_submit_settings['hide_submit']['hide_submit_status']);
+  //  || drupal_match_path($path_alias, $patterns)
+
+  // $path_matches = ;
+
+  if (\Drupal::service('path.matcher')->matchPath($path, $patterns) || \Drupal::service('path.matcher')->matchPath($path_alias, $patterns)) {
+    return FALSE;
+  }
+  else {
+    //kint("HEY 34567");
+    return TRUE;
+  }
+
+}
+
+/**
+ * Adds the JS and CSS to the form.
+ */
+
+function hide_submit_attach_js_css(&$form) {
+  // Add JavaScript.
+ // echo "hi";
+  /*if (!isset($form['#attached']['js'])) {
+    $form['#attached']['js'] = array();
+  }
+  $form['#attached']['js'][drupal_get_path('module', 'hide_submit') . '/js/hide_submit.js'] = array(
+    'type' => 'file',
+    'weight' => 10,
+  );*/
+  //kint(" INSIDE hide_submit_attach_js_css");
+  $form['#attached']['library'][]= 'hide_submit/global-styling1';
+  //print_r($form);
+  //kint("in attach_js_css");
+if (\Drupal::config('hide_submit.settings')->get('hide_submit_method') == 'indicator') {
+    /*$form['#attached']['js'][drupal_get_path('module', 'hide_submit') . '/js/spin.min.js'] = array(
+      'type' => 'file',
+      'weight' => 11,
+    );
+    $form['#attached']['js'][drupal_get_path('module', 'hide_submit') . '/js/ladda.min.js'] = array(
+      'type' => 'file',
+      'weight' => 12,
+    );*/
+    $form['#attached']['library'][]= 'hide_submit/global-styling3';
+    $form['#attached']['library'][]= 'hide_submit/global-styling2';
+  }
+
+  // Add CSS.
+ /* if (!isset($form['#attached']['css'])) {
+    $form['#attached']['css'] = array();
+  }
+  
+if (\Drupal::config('hide_submit.settings')->get('hide_submit_method') == 'indicator') {
+    $form['#attached']['css'][drupal_get_path('module', 'hide_submit') . '/css/ladda-themeless.min.css'] = array(
+      'type' => 'file',
+      'weight' => 9,
+    );
+  }
+  $form['#attached']['css'][drupal_get_path('module', 'hide_submit') . '/css/hide_submit.css'] = array(
+  
+    'type' => 'file',
+    'weight' => 10,
+  );*/
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function hide_submit_form_alter(&$form, \Drupal\Core\Form\FormStateInterface &$form_state, $form_id) {
+/* if (\Drupal::currentUser()->hasPermission('bypass hide submit') && 1 != \Drupal::currentUser()->uid) {
+    kint("000");
+    $user=\Drupal::currentUser()->uid;
+    kint($user);
+    return;
+  }*/
+  if (hide_submit_add_settings($form)) {
+   // kint("111");
+    hide_submit_attach_js_css($form);
+    $form['#after_build'][] = 'hide_submit_after_build';
+  }
+}
+
+/**
+ * After build form callback.
+ */
+function hide_submit_after_build($form, &$form_state) {
+  if (hide_submit_add_settings($form)) {
+    /*kint("please show this");
+    kint("2");*/
+    hide_submit_attach_js_css($form);
+  }
+
+  return $form;
+}
+

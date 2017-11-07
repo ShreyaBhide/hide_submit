@@ -13,23 +13,24 @@
 
 (function ($, Drupal, drupalSettings) {
   'use strict';
- // var timeoutId = null;
+ // var timeoutId = null ;
   // To understand behaviors, see https://drupal.org/node/756722#behaviors
   Drupal.behaviors.hideSubmitBlockit = {
     attach: function(context) {
-      alert('in js');
+      //alert('in js');
+     // alert("JDU");
       //console.log(drupalSettings.hide_submit);
       var timeoutId = null;
-      alert("after timeout");
-      $('form', context).once('hideSubmitButton', function () {
-        alert('in js 0');
+    
+        $('form' , context).once('hideSubmitButton').each(function() {
+        //alert('in js 0');
         var $form = $(this);
-        alert('in js 0');
+        //alert('in js 0');
         
         // Bind to input elements.
         if (drupalSettings.hide_submit.hide_submit_method === 'indicator') {
           // Replace input elements with buttons.
-          alert('1 js');
+         // alert('1 js');
           $('input.form-submit', $form).each(function(index, el) {
             var attrs = {};
 
@@ -54,7 +55,7 @@
           });
         }
         else {
-          alert('2 js');
+          //alert('2 js');
           $('input.form-submit, button.form-submit', $form).click(function (e) {
             var el = $(this);
             el.after('<input type="hidden" name="' + el.attr('name') + '" value="' + el.attr('value') + '" />');
@@ -64,7 +65,7 @@
 
         // Bind to form submit.
         $('form', context).submit(function (e) {
-          alert('3 js');
+          //alert('3 js');
           var $inp;
           if (!e.isPropagationStopped()) {
             if (drupalSettings.hide_submit.hide_submit_method === 'disable') {
@@ -111,7 +112,7 @@
 
       // Reset all buttons.
       function hideSubmitResetButtons(event, form) {
-        alert('4 js');
+        //alert('4 js');
         // Clear timer.
         window.clearTimeout(timeoutId);
         timeoutId = null;
@@ -143,3 +144,4 @@
   };
 
 })(jQuery, Drupal, drupalSettings);
+  

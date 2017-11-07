@@ -133,12 +133,11 @@ if (\Drupal::config('hide_submit.settings')->get('hide_submit_method') == 'indic
  * Implements hook_form_alter().
  */
 function hide_submit_form_alter(&$form, \Drupal\Core\Form\FormStateInterface &$form_state, $form_id) {
-/* if (\Drupal::currentUser()->hasPermission('bypass hide submit') && 1 != \Drupal::currentUser()->uid) {
-    kint("000");
-    $user=\Drupal::currentUser()->uid;
-    kint($user);
+//if (\Drupal::currentUser()->hasPermission('bypass hide submit') && 1 != \Drupal::currentUser()->uid) {
+   if (\Drupal::currentUser()->hasPermission('bypass hide submit') && 1 != \Drupal\user\Entity\User::load(\Drupal::currentUser()->id())->get('uid')->value) {
+    
     return;
-  }*/
+  }
   if (hide_submit_add_settings($form)) {
    // kint("111");
     hide_submit_attach_js_css($form);
